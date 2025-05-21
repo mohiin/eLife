@@ -1,4 +1,4 @@
 
 
-const frontendUrl = "http://localhost:5173";
+const frontendUrl = "https://e-life-mohin.vercel.app";
 export default frontendUrl;
