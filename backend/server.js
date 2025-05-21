@@ -9,8 +9,6 @@ import frontendUrl from "./config/url.js";
 import cartRouter from "./routes/cartRoute.js";
 import orderRouter from "./routes/orderRoute.js";
 
-import serverless from "serverless-http";
-
 //app config
 const app = express();
 const port =  process.env.PORT || 4000;
@@ -37,8 +35,6 @@ app.get("/", (req, res) => {
     res.send("server is running.....");
 })
 
-// app.listen(port, (req, res) => {
-//     console.log(`app is listing on port ${port}`);
-// })
-
-export const handler = serverless(app);
+app.listen(port, (req, res) => {
+    console.log(`app is listing on port ${port}`);
+})
