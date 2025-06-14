@@ -123,16 +123,25 @@ const deleteProduct = async (req, res) => {
 
 const searchProduct = async (req, res) => {
     const { q } = req.params;
-
     try {
-        const searchQuery = {
-            "$or": [
-                { "name": { $regex: q, $options: "i" } },
-                { "category": { $regex: q, $options: "i" } },
-            ]
-        }
+        // Normalize query to include common synonyms
+        const keywordMap = {
+            phone: ['phone', 'mobile', 'cellphone', 'smartphone'],
+            mobile: ['mobile', 'phone', 'smartphone'],
+            // Add more synonym groups as needed
+        };
 
-        const result = await ProductModel.find(searchQuery);
+        const normalizedKeywords = keywordMap[q.toLowerCase()] || [q];
+
+        // Create regex array for all related keywords
+        const regexArray = normalizedKeywords.map(term => ({
+            "$or": [
+                { name: { $regex: term, $options: "i" } },
+                { category: { $regex: term, $options: "i" } },
+            ]
+        }));
+
+        const result = await ProductModel.find({ $or: regexArray.flat() });
         res.json({ success: true, data: result });
     } catch (error) {
         console.log("Error in search products ", error);
